@@ -7,6 +7,7 @@ function TDL() {
   const [taskList, setTaskList] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(0);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
   const deleteTask = (id) => {
     let result = taskList.filter((elem) => elem.id !== id);
@@ -18,12 +19,21 @@ function TDL() {
     let editableTask = taskList.find((elem) => elem.id === id);
     setUserInput(editableTask.value);
   };
+  const changeColorOnClick = (index) => {
+    setSelectedItemIndex(index);
+  };
   return (
     <div className="app_container">
       <div className="tasks_container">
         {taskList.map((item, index) => {
           return (
-            <div key={index} className="task_item">
+            <div
+              key={index}
+              className={`task_item ${
+                selectedItemIndex === index ? "selected" : "darkblue"
+              }`}
+              onClick={() => changeColorOnClick(index)}
+            >
               <p>{item.value}</p>
               <button
                 onClick={() => {
@@ -52,30 +62,30 @@ function TDL() {
             setUserInput(e.target.value);
           }}
         />
-              <button onClick={() => {
-                  if (editMode === true) {
-                      let updatedArray = [...taskList];
-                      updatedArray.find((elem) => elem.id === editId).value = userInput;
-                      setTaskList(updatedArray);
-                      setUserInput("");
-                      setEditId(0);
-                      setEditMode(false);
-                  }
-                  else {
-                      if (userInput !== "") {
-                          let newTask = {
-                              id: Math.random(),
-                              value: userInput
-                          };
-                          let copyOfTaskList = [...taskList];
-                          copyOfTaskList.push(newTask);
-                          setTaskList(copyOfTaskList);
-                          setUserInput("");
-                      }
-                  }
-              }}>
-                  {editMode===true ?"Edit task":"Add task"}
-                  
+        <button
+          onClick={() => {
+            if (editMode === true) {
+              let updatedArray = [...taskList];
+              updatedArray.find((elem) => elem.id === editId).value = userInput;
+              setTaskList(updatedArray);
+              setUserInput("");
+              setEditId(0);
+              setEditMode(false);
+            } else {
+              if (userInput !== "") {
+                let newTask = {
+                  id: Math.random(),
+                  value: userInput,
+                };
+                let copyOfTaskList = [...taskList];
+                copyOfTaskList.push(newTask);
+                setTaskList(copyOfTaskList);
+                setUserInput("");
+              }
+            }
+          }}
+        >
+          {editMode === true ? "Edit task" : "Add task"}
         </button>
       </div>
     </div>
